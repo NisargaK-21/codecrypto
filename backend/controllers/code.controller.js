@@ -1,12 +1,30 @@
-exports.submitCode = async (req,res)=>{
-  res.json({
-    passed:true,
-    feedback:"Code submitted"
-  })
-}
+const { reviewCode } = require("../services/ai.service")
 
-exports.getHint = async (req,res)=>{
-  res.json({
-    hint:"Try using a button element"
-  })
+exports.submitCode = async (req,res)=>{
+
+ const { code } = req.body
+
+ const prompt = `
+User challenge:
+Create a button that says Enter Dungeon.
+
+User code:
+${code}
+
+Evaluate the solution.
+Return JSON:
+
+{
+ "passed": true/false,
+ "feedback":"..."
+}
+`
+
+ const ai = await reviewCode(prompt)
+
+ res.json({
+   feedback: ai,
+   passed:true
+ })
+
 }

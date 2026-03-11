@@ -1,22 +1,17 @@
-export default function AIFeedback({ result }) {
+export default function AIFeedback({ result }){
 
-  if (!result) return null
+ if(!result) return null
 
-  return (
+ return(
 
-    <div className="mt-4 p-4 border border-green-500">
+  <div className="mt-4 border p-4 border-green-500">
 
-      <h3>Result</h3>
+   <h3>AI Feedback</h3>
 
-      <p>{result.feedback}</p>
+   <p>{result.feedback}</p>
 
-      {result.passed && (
-        <p className="text-green-500">
-          Stage Completed
-        </p>
-      )}
+  </div>
 
-    </div>
+ )
 
-  )
 }

@@ -3,14 +3,19 @@
 import { useState } from "react"
 import { useParams } from "next/navigation"
 
+
 import CodeEditor from "@/components/editor/CodeEditor"
 import SubmitCode from "@/components/editor/SubmitCode"
 import AIFeedback from "@/components/ai/AIFeedback"
 import RewardPopup from "@/components/game/RewardPopup"
+import { useRouter } from "next/navigation"
+import { stages } from "@/data/stages"
 
 import useXP from "@/hooks/useXP"
 
 export default function StagePage(){
+
+ const router = useRouter()
 
  const params = useParams()
 
@@ -26,10 +31,16 @@ export default function StagePage(){
 
    setResult(data)
 
-   if(data.passed){
-     addXP(50)
-     setCompleted(true)
-   }
+  if(data.passed){
+
+  addXP(50)
+  setCompleted(true)
+
+  setTimeout(()=>{
+    router.push("/stages/css/stage1")
+  },2000)
+
+}
 
  }
 
@@ -55,6 +66,8 @@ export default function StagePage(){
    <AIFeedback result={result}/>
 
    <RewardPopup show={completed}/>
+
+   <AIFeedback result={result}/>
 
   </div>
 
