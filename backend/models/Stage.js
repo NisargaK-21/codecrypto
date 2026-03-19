@@ -1,11 +1,13 @@
-const mongoose = require("mongoose")
+// backend/models/Stage.js
+const mongoose = require("mongoose");
 
 const stageSchema = new mongoose.Schema({
-  title: String,
+  title: { type: String, required: true },
   description: String,
   difficulty: String,
-  rewardXP: Number,
-  unlocked: Boolean
-})
+  rewardXP: { type: Number, default: 50 },
+  unlocked: { type: Boolean, default: false },
+  meta: { type: Object, default: {} },
+});
 
-module.exports = mongoose.model("Stage", stageSchema)
+module.exports = mongoose.model("Stage", stageSchema);

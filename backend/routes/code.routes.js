@@ -1,9 +1,10 @@
-const express = require("express")
-const router = express.Router()
+// backend/routes/code.routes.js
+const express = require("express");
+const router = express.Router();
 
-const { submitCode, getHint } = require("../controllers/code.controller")
+const { submitCode, getHint } = require("../controllers/code.controller");
 
-router.post("/submit", submitCode)
-router.post("/hint", getHint)
+router.post("/submit", submitCode);
+router.post("/hint", getHint);
 
-module.exports = router
+module.exports = router;

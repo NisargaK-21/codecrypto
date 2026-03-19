@@ -1,76 +1,51 @@
-"use client"
+// frontend/src/app/stages/html/[id]/page.js
+"use client";
 
-import { useState } from "react"
-import { useParams } from "next/navigation"
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
+import CodeEditor from "@/components/editor/CodeEditor";
+import SubmitCode from "@/components/editor/SubmitCode";
+import AIFeedback from "@/components/ai/AIFeedback";
+import RewardPopup from "@/components/game/RewardPopup";
+import useXP from "@/hooks/useXP";
 
-import CodeEditor from "@/components/editor/CodeEditor"
-import SubmitCode from "@/components/editor/SubmitCode"
-import AIFeedback from "@/components/ai/AIFeedback"
-import RewardPopup from "@/components/game/RewardPopup"
-import { useRouter } from "next/navigation"
-import { stages } from "@/data/stages"
+export default function StagePage() {
+  const router = useRouter();
+  const params = useParams();
+  const stageId = params?.id;
 
-import useXP from "@/hooks/useXP"
+  const [code, setCode] = useState("<button>Enter Dungeon</button>");
+  const [result, setResult] = useState(null);
+  const [completed, setCompleted] = useState(false);
+  const { addXP } = useXP();
 
-export default function StagePage(){
+  const handleResult = (data) => {
+    if (!data) return;
+    setResult(data);
 
- const router = useRouter()
+    if (data.passed) {
+      addXP(50);
+      setCompleted(true);
 
- const params = useParams()
+      // Use a short delay to show reward popup, then navigate
+      setTimeout(() => {
+        router.push("/stages/css/stage1");
+      }, 1500);
+    }
+  };
 
- const stageId = params.id
+  return (
+    <div className="p-10">
+      <h1 className="text-3xl text-red-500">Haunted HTML Gate</h1>
 
- const [code,setCode] = useState("")
- const [result,setResult] = useState(null)
- const [completed,setCompleted] = useState(false)
+      <CodeEditor code={code} setCode={setCode} />
 
- const { addXP } = useXP()
+      <SubmitCode code={code} stageId={stageId} setResult={handleResult} />
 
- const handleResult = (data)=>{
+      <AIFeedback result={result} />
 
-   setResult(data)
-
-  if(data.passed){
-
-  addXP(50)
-  setCompleted(true)
-
-  setTimeout(()=>{
-    router.push("/stages/css/stage1")
-  },2000)
-
-}
-
- }
-
- return(
-
-  <div className="p-10">
-
-   <h1 className="text-3xl text-red-500">
-    Haunted HTML Gate
-   </h1>
-
-   <CodeEditor
-    code={code}
-    setCode={setCode}
-   />
-
-   <SubmitCode
-    code={code}
-    stageId={stageId}
-    setResult={handleResult}
-   />
-
-   <AIFeedback result={result}/>
-
-   <RewardPopup show={completed}/>
-
-   <AIFeedback result={result}/>
-
-  </div>
-
- )
-
+      <RewardPopup show={completed} />
+    </div>
+  );
 }

@@ -1,30 +1,55 @@
-const { reviewCode } = require("../services/ai.service")
+const Stage = require("../models/Stage");
+const { reviewCode } = require("../services/ai.service");
 
-exports.submitCode = async (req,res)=>{
+exports.submitCode = async (req, res) => {
+  try {
+    const { code, stageId, stageType } = req.body;
 
- const { code } = req.body
+    if (!code) {
+      return res.status(400).json({ passed: false, feedback: "No code provided" });
+    }
 
- const prompt = `
-User challenge:
-Create a button that says Enter Dungeon.
+    let stage = null;
+    if (stageId) {
+      try {
+        stage = await Stage.findById(stageId);
+      } catch (err) {
+        stage = null;
+      }
+    }
 
-User code:
-${code}
+    const result = await reviewCode({ stage, stageType, code });
 
-Evaluate the solution.
-Return JSON:
+    return res.json({
+      passed: !!result.passed,
+      feedback: result.feedback || "",
+      improvement: result.improvement || null,
+    });
+  } catch (error) {
+    console.error("submitCode error:", error);
+    return res.status(500).json({ passed: false, feedback: "Server error evaluating code" });
+  }
+};
 
-{
- "passed": true/false,
- "feedback":"..."
-}
-`
+exports.getHint = async (req, res) => {
+  try {
+    const { stageId, stageType, code } = req.body;
 
- const ai = await reviewCode(prompt)
+    let stage = null;
+    if (stageId) {
+      try {
+        stage = await Stage.findById(stageId);
+      } catch (err) {
+        stage = null;
+      }
+    }
 
- res.json({
-   feedback: ai,
-   passed:true
- })
+    // Use the same validation logic; it returns helpful feedback that can be treated as a hint.
+    const result = await reviewCode({ stage, stageType, code: code || "" });
 
-}
+    return res.json({ hint: result.feedback || "Try adjusting your code to match the stage instructions." });
+  } catch (error) {
+    console.error("getHint error:", error);
+    return res.status(500).json({ hint: "Server error generating hint" });
+  }
+};

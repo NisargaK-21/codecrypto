@@ -1,13 +1,10 @@
-const express = require("express")
-const router = express.Router()
+// backend/routes/stage.routes.js
+const express = require("express");
+const router = express.Router();
 
-const {
-  getStages,
-  getStageById
-} = require("../controllers/stage.controller")
+const { getStages, getStageById } = require("../controllers/stage.controller");
 
-router.get("/", getStages)
+router.get("/", getStages);
+router.get("/:id", getStageById);
 
-router.get("/:id", getStageById)
-
-module.exports = router
+module.exports = router;

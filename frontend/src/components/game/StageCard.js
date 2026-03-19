@@ -1,26 +1,22 @@
-"use client"
+// frontend/src/components/game/StageCard.js
+"use client";
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 export default function StageCard({ stage }) {
-
-  const router = useRouter()
+  const router = useRouter();
 
   const enterStage = () => {
-    router.push(`/stages/html/${stage._id}`)
-  }
+    // Use _id if available; fallback to id
+    const id = stage._id || stage.id;
+    router.push(`/stages/html/${id}`);
+  };
 
   return (
+    <div className="border border-red-600 p-5 rounded bg-neutral-900">
+      <h2 className="text-xl text-red-400">{stage.title}</h2>
 
-    <div className="border border-red-600 p-5 rounded">
-
-      <h2 className="text-xl text-red-400">
-        {stage.title}
-      </h2>
-
-      <p className="text-gray-400">
-        {stage.description}
-      </p>
+      <p className="text-gray-400">{stage.description}</p>
 
       <button
         onClick={enterStage}
@@ -28,8 +24,6 @@ export default function StageCard({ stage }) {
       >
         Enter Stage
       </button>
-
     </div>
-
-  )
+  );
 }

@@ -1,13 +1,20 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/codecrypt")
-    console.log("MongoDB Connected")
-  } catch (error) {
-    console.log(error)
-    process.exit(1)
-  }
-}
 
-module.exports = connectDB
+    const uri = process.env.MONGO_URI || "mongodb://localhost:27017/codecrypt";
+
+    await mongoose.connect(uri);
+
+    console.log("MongoDB Connected");
+
+  } catch (error) {
+
+    console.error("MongoDB connection error:", error.message);
+    process.exit(1);
+
+  }
+};
+
+module.exports = connectDB;
