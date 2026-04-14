@@ -2,11 +2,20 @@
 "use client"
 
 import axios from "axios"
+import { stages } from "@/data/stages"
 
 export default function SubmitCode({ code, stageId, setResult }) {
   const handleSubmit = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/code/submit", { stageId, code });
+      // Find the stage data from the frontend
+      const stage = stages.find(s => s.id === parseInt(stageId));
+      
+      const res = await axios.post("http://localhost:5000/api/code/submit", { 
+        stageId, 
+        code,
+        stage, // Send the full stage data including instructions
+        stageType: stage?.type // Also send stage type for fallback
+      });
       setResult(res.data);
     } catch (err) {
       console.error("submit error:", err?.response?.data || err.message);

@@ -3,22 +3,23 @@ const { reviewCode } = require("../services/ai.service");
 
 exports.submitCode = async (req, res) => {
   try {
-    const { code, stageId, stageType } = req.body;
+    const { code, stageId, stageType, stage } = req.body;
 
     if (!code) {
       return res.status(400).json({ passed: false, feedback: "No code provided" });
     }
 
-    let stage = null;
-    if (stageId) {
+    // Use stage data from request if provided, otherwise try to fetch from DB
+    let stageData = stage || null;
+    if (!stageData && stageId) {
       try {
-        stage = await Stage.findById(stageId);
+        stageData = await Stage.findById(stageId);
       } catch (err) {
-        stage = null;
+        stageData = null;
       }
     }
 
-    const result = await reviewCode({ stage, stageType, code });
+    const result = await reviewCode({ stage: stageData, stageType, code });
 
     return res.json({
       passed: !!result.passed,
@@ -33,19 +34,19 @@ exports.submitCode = async (req, res) => {
 
 exports.getHint = async (req, res) => {
   try {
-    const { stageId, stageType, code } = req.body;
+    const { stageId, stageType, code, stage } = req.body;
 
-    let stage = null;
-    if (stageId) {
+    let stageData = stage || null;
+    if (!stageData && stageId) {
       try {
-        stage = await Stage.findById(stageId);
+        stageData = await Stage.findById(stageId);
       } catch (err) {
-        stage = null;
+        stageData = null;
       }
     }
 
     // Use the same validation logic; it returns helpful feedback that can be treated as a hint.
-    const result = await reviewCode({ stage, stageType, code: code || "" });
+    const result = await reviewCode({ stage: stageData, stageType, code: code || "" });
 
     return res.json({ hint: result.feedback || "Try adjusting your code to match the stage instructions." });
   } catch (error) {

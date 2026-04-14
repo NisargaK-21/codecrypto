@@ -23,6 +23,7 @@ function formatStageInfo(stage) {
   const parts = [];
   if (stage.title) parts.push(`Title: ${stage.title}`);
   if (stage.description) parts.push(`Description: ${stage.description}`);
+  if (stage.instructions) parts.push(`Instructions: ${stage.instructions}`);
   if (stage.difficulty) parts.push(`Difficulty: ${stage.difficulty}`);
   if (stage.meta && typeof stage.meta === "object") parts.push(`Meta: ${JSON.stringify(stage.meta)}`);
   return parts.join("\n");
